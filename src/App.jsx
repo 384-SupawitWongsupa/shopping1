@@ -38,7 +38,7 @@ const productCards = [
     id: 1,
     name: 'Earthen Bottle',
     href: '#',
-    price: '$48',
+    price: 48,
     imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg',
     imageAlt: 'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
   },
@@ -46,7 +46,7 @@ const productCards = [
     id: 2,
     name: 'Nomad Tumbler',
     href: '#',
-    price: '$35',
+    price: 35,
     imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg',
     imageAlt: 'Olive drab green insulated bottle with flared screw lid and flat top.',
   },
@@ -54,7 +54,7 @@ const productCards = [
     id: 3,
     name: 'Focus Paper Refill',
     href: '#',
-    price: '$89',
+    price: 89,
     imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-03.jpg',
     imageAlt: 'Person using a pen to cross a task off a productivity paper card.',
   },
@@ -62,7 +62,7 @@ const productCards = [
     id: 4,
     name: 'Machined Mechanical Pencil',
     href: '#',
-    price: '$35',
+    price: 35,
     imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-04.jpg',
     imageAlt: 'Hand holding black machined steel mechanical pencil with brass tip and top.',
   },
@@ -70,7 +70,7 @@ const productCards = [
     id: 5,
     name: 'Pencil Case',
     href: '#',
-    price: '$12',
+    price: 12,
     imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-05.jpg',
     imageAlt: 'Stylish pencil case for storing writing instruments.',
   },
@@ -78,7 +78,7 @@ const productCards = [
     id: 6,
     name: 'Notebook',
     href: '#',
-    price: '$15',
+    price: 15,
     imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-06.jpg',
     imageAlt: 'A beautiful notebook for writing notes.',
   },
@@ -86,7 +86,7 @@ const productCards = [
     id: 7,
     name: 'Backpack',
     href: '#',
-    price: '$45',
+    price: 45,
     imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-07.jpg',
     imageAlt: 'Durable backpack for daily use.',
   },
@@ -94,7 +94,7 @@ const productCards = [
     id: 8,
     name: 'Laptop Stand',
     href: '#',
-    price: '$25',
+    price: 25,
     imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-08.jpg',
     imageAlt: 'Adjustable laptop stand for ergonomic use.',
   },
@@ -102,7 +102,7 @@ const productCards = [
     id: 9,
     name: 'Wireless Mouse',
     href: '#',
-    price: '$30',
+    price: 30,
     imageSrc: 'https://image.made-in-china.com/2f0j00pNKVERgFbqrM/Wireless-Mouse-for-Laptop-2400-Dpi-Wireless-Computer-Mouse-with-6-Buttons-2-4G-Ergonomic-USB-Cordless-Mouse-15-Months-Battery-Life-Mouse-for-Laptop-PC-Mac-COM.webp',
     imageAlt: 'Ergonomic wireless mouse for better productivity.',
   },
@@ -110,7 +110,7 @@ const productCards = [
     id: 10,
     name: 'Smart Watch',
     href: '#',
-    price: '$199',
+    price: 199,
     imageSrc: 'https://image.made-in-china.com/202f0j00ZlaVMNIdwJYF/Simple-Lifestyle-Smart-Watch-for-Ios-Android-Exercise-Digital-Watches-Sports-Wrist-Smartwatch.jpg',
     imageAlt: 'Feature-rich smart watch for fitness tracking.',
   },
@@ -118,6 +118,39 @@ const productCards = [
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [discountCode, setDiscountCode] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const addToCart = (product) => {
+    const existingProduct = cart.find((item) => item.id === product.id);
+    if (existingProduct) {
+      setCart(cart.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item));
+    } else {
+      setCart([...cart, { ...product, quantity: 1 }]);
+    }
+  };
+
+  const removeFromCart = (id) => {
+    setCart(cart.filter(item => item.id !== id));
+  };
+
+  const updateQuantity = (id, quantity) => {
+    setCart(cart.map(item => item.id === id ? { ...item, quantity } : item));
+  };
+
+  const calculateTotal = () => {
+    const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const shipping = 100; // ค่าใช้จ่ายการจัดส่ง
+    const discount = discountCode === "DISCOUNT" ? 10 : 0; // ใช้คูปองส่วนลด
+    return subtotal + shipping - discount;
+  };
+
+  const handleCheckout = () => {
+    const total = calculateTotal();
+    setTotalPrice(total);
+    // สามารถเพิ่มโค้ดสำหรับการชำระเงินที่นี่
+  };
 
   return (
     <header className="bg-white">
@@ -136,133 +169,115 @@ export default function Example() {
             onClick={() => setMobileMenuOpen(true)}
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
           >
-            <span className="sr-only">Open main menu</span>
-            <Bars3Icon aria-hidden="true" className="h-6 w-6" />
+            <span className="sr-only">Open menu</span>
+            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-          <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
-              Products
-              <ChevronDownIcon aria-hidden="true" className="h-5 w-5 flex-none text-gray-400" />
-            </PopoverButton>
-            <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 transition">
-              <div className="p-4">
-                {products.map((item) => (
-                  <div key={item.name} className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
-                    <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                      <item.icon aria-hidden="true" className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" />
+        <div className="hidden lg:flex lg:gap-x-12">
+          <PopoverGroup>
+            <Popover>
+              <PopoverButton className="inline-block text-gray-900">Products</PopoverButton>
+              <PopoverPanel className="absolute z-10 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5">
+                {products.map((product) => (
+                  <a key={product.name} href={product.href} className="block p-4 hover:bg-gray-100">
+                    <div className="flex items-center">
+                      <product.icon className="h-6 w-6" aria-hidden="true" />
+                      <div className="ml-3">
+                        <p className="text-sm font-semibold text-gray-900">{product.name}</p>
+                        <p className="text-xs text-gray-600">{product.description}</p>
+                      </div>
                     </div>
-                    <div className="flex-auto">
-                      <a href={item.href} className="block font-semibold text-gray-900">{item.name}</a>
-                      <p className="mt-1 text-gray-600">{item.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
-                {callsToAction.map((item) => (
-                  <a key={item.name} href={item.href} className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100">
-                    <item.icon aria-hidden="true" className="h-5 w-5 flex-none text-gray-400" />
-                    {item.name}
                   </a>
                 ))}
-              </div>
-            </PopoverPanel>
-          </Popover>
-        </PopoverGroup>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
+              </PopoverPanel>
+            </Popover>
+          </PopoverGroup>
+        </div>
+        <div className="hidden lg:flex lg:gap-x-12">
+          <button onClick={() => setCart([])} className="flex items-center text-gray-900">
+            <ShoppingCartIcon className="h-6 w-6" />
+            <span className="ml-2">Cart ({cart.length})</span>
+          </button>
         </div>
       </nav>
 
-      <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
-        <div className="fixed inset-0 z-10" />
-        <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
-                <path d="M9.375 3a1.875 1.875 0 0 0 0 3.75h1.875v4.5H3.375A1.875 1.875 0 0 1 1.5 9.375v-.75c0-1.036.84-1.875 1.875-1.875h3.193A3.375 3.375 0 0 1 12 2.753a3.375 3.375 0 0 1 5.432 3.997h3.943c1.035 0 1.875.84 1.875 1.875v.75c0 1.036-.84 1.875-1.875 1.875H12.75v-4.5h1.875a1.875 1.875 0 1 0-1.875-1.875V6.75h-1.5V4.875C11.25 3.839 10.41 3 9.375 3ZM11.25 12.75H3v6.75a2.25 2.25 0 0 0 2.25 2.25h6v-9ZM12.75 12.75v9h6.75a2.25 2.25 0 0 0 2.25-2.25v-6.75h-9Z" />
-              </svg>
-            </a>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(false)}
-              className="-m-2.5 rounded-md p-2.5 text-gray-700"
-            >
-              <span className="sr-only">Close menu</span>
-              <XMarkIcon aria-hidden="true" className="h-6 w-6" />
-            </button>
-          </div>
-          <div className="mt-6 flow-root">
-            <div className="-my-6 divide-y divide-gray-500/10">
-              <div className="space-y-2 py-6">
-                <Popover className="relative">
-                  <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
-                    Products
-                    <ChevronDownIcon aria-hidden="true" className="h-5 w-5 flex-none text-gray-400" />
-                  </PopoverButton>
-                  <PopoverPanel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 transition">
-                    <div className="p-4">
-                      {products.map((item) => (
-                        <div key={item.name} className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
-                          <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                            <item.icon aria-hidden="true" className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" />
-                          </div>
-                          <div className="flex-auto">
-                            <a href={item.href} className="block font-semibold text-gray-900">{item.name}</a>
-                            <p className="mt-1 text-gray-600">{item.description}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
-                      {callsToAction.map((item) => (
-                        <a key={item.name} href={item.href} className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100">
-                          <item.icon aria-hidden="true" className="h-5 w-5 flex-none text-gray-400" />
-                          {item.name}
-                        </a>
-                      ))}
-                    </div>
-                  </PopoverPanel>
-                </Popover>
-              </div>
-              <div className="py-6">
-                <a href="#" className="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-400">Log in</a>
+      <div className="p-6">
+        <h2 className="text-lg font-bold">Products</h2>
+        <div className="grid grid-cols-1 gap-6 mt-4 md:grid-cols-2 lg:grid-cols-3">
+          {productCards.map((product) => (
+            <div key={product.id} className="border rounded-lg overflow-hidden shadow">
+              <img src={product.imageSrc} alt={product.imageAlt} className="h-48 w-full object-cover" />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold">{product.name}</h3>
+                <p className="text-gray-600">${product.price}</p>
+                <button
+                  onClick={() => addToCart(product)}
+                  className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Add to Cart
+                </button>
               </div>
             </div>
-          </div>
-        </Dialog.Panel>
+          ))}
+        </div>
+      </div>
+
+      <Dialog open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)}>
+        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+        <div className="fixed right-0 top-0 w-2/3 h-full bg-white p-6">
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(false)}
+            className="text-gray-700"
+          >
+            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+          </button>
+          <h2 className="mt-4 text-lg font-bold">Menu</h2>
+          <ul className="mt-4">
+            {products.map((product) => (
+              <li key={product.name} className="py-2">
+                <a href={product.href} className="text-gray-700">{product.name}</a>
+              </li>
+            ))}
+          </ul>
+          <button onClick={() => setCart([])} className="flex items-center text-gray-900 mt-4">
+            <ShoppingCartIcon className="h-6 w-6" />
+            <span className="ml-2">Cart ({cart.length})</span>
+          </button>
+        </div>
       </Dialog>
 
-      {/* Product Cards */}
-      <div className="bg-gray-100 py-10">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Products</h2>
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {productCards.map((product) => (
-              <div key={product.id} className="group relative bg-white shadow-md rounded-lg overflow-hidden">
-                <div className="relative w-full h-48 bg-gray-200">
-                  <img
-                    src={product.imageSrc}
-                    alt={product.imageAlt}
-                    className="w-full h-full object-center object-cover"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="text-sm font-medium text-gray-700">
-                    <a href={product.href}>
-                      <span aria-hidden="true" className="absolute inset-0" />
-                      {product.name}
-                    </a>
-                  </h3>
-                  <p className="mt-1 text-lg font-bold text-gray-900">{product.price}</p>
-                </div>
-              </div>
-            ))}
+      <div className="p-6">
+        <h2 className="text-lg font-bold">Shopping Cart</h2>
+        {cart.length === 0 ? (
+          <p>Your cart is empty.</p>
+        ) : (
+          <div>
+            <ul>
+              {cart.map((item) => (
+                <li key={item.id} className="flex justify-between py-2">
+                  <span>{item.name} x {item.quantity}</span>
+                  <span>${item.price * item.quantity}</span>
+                  <button onClick={() => removeFromCart(item.id)} className="text-red-500">Remove</button>
+                </li>
+              ))}
+            </ul>
+            <div className="flex justify-between py-2">
+              <span>Total:</span>
+              <span>${calculateTotal()}</span>
+            </div>
+            <div className="flex">
+              <input
+                type="text"
+                placeholder="Discount Code"
+                value={discountCode}
+                onChange={(e) => setDiscountCode(e.target.value)}
+                className="border rounded p-2 mr-2"
+              />
+              <button onClick={handleCheckout} className="bg-green-500 text-white px-4 py-2 rounded">Checkout</button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </header>
   );
